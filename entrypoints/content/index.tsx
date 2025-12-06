@@ -193,6 +193,7 @@ export default defineContentScript({
                     <div className="MenuSeparator" />
                   </>
                 )}
+                <div className="MenuLabel">Random</div>
                 {languagesToShow.map((language) => (
                   <MenuItem
                     node={<div key={language}>{capitalize(language)}</div>}
