@@ -261,3 +261,7 @@ export const Menu = forwardRef<
 
   return <MenuComponent {...props} ref={ref} />;
 });
+
+export const MenuSeparator = () => {
+  return <div className="MenuSeparator" />;
+};

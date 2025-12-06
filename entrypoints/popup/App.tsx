@@ -1,4 +1,8 @@
-import { enableLongPressStorage, customContentsStorage } from "@/utils/storage";
+import {
+  enableLongPressStorage,
+  customContentsStorage,
+  showRandomLanguagesStorage,
+} from "@/utils/storage";
 import { useState } from "react";
 import { useStorage } from "@/utils/useStorage";
 import "./App.css";
@@ -6,6 +10,9 @@ import "./App.css";
 function App() {
   const [enableLongPress, setEnableLongPress] = useStorage<boolean>(
     enableLongPressStorage
+  );
+  const [showRandomLanguages, setShowRandomLanguages] = useStorage<boolean>(
+    showRandomLanguagesStorage
   );
 
   return (
@@ -22,6 +29,16 @@ function App() {
             type="checkbox"
             checked={!!enableLongPress}
             onChange={(e) => setEnableLongPress(e.target.checked)}
+            className="toggle"
+          />
+        </div>
+        <div className="row">
+          <label htmlFor="show-random">Show Random Languages</label>
+          <input
+            id="show-random"
+            type="checkbox"
+            checked={!!showRandomLanguages}
+            onChange={(e) => setShowRandomLanguages(e.target.checked)}
             className="toggle"
           />
         </div>

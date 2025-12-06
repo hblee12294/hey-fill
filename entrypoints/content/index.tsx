@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { Popup } from "@/components/Popup.tsx";
-import { Menu, MenuItem } from "@/components/DropdownMenu.tsx";
+import { Menu, MenuItem, MenuSeparator } from "@/components/DropdownMenu.tsx";
 import { LANGUAGES } from "@/data";
 import { capitalize } from "@/utils/capitalize";
 import "@/components/styles.css";
@@ -118,10 +118,23 @@ export default defineContentScript({
         const ContentApp = () => {
           const languagesToShow = LANGUAGES;
           const [customContents, setCustomContents] = useState<string[]>([]);
+          const [showRandomLanguages, setShowRandomLanguages] =
+            useState<boolean>(true);
 
           useEffect(() => {
             customContentsStorage.getValue().then(setCustomContents);
-            return customContentsStorage.watch(setCustomContents);
+            showRandomLanguagesStorage.getValue().then(setShowRandomLanguages);
+
+            const unwatchCustom =
+              customContentsStorage.watch(setCustomContents);
+            const unwatchRandom = showRandomLanguagesStorage.watch(
+              setShowRandomLanguages
+            );
+
+            return () => {
+              unwatchCustom();
+              unwatchRandom();
+            };
           }, []);
 
           const handleInsertParams = (content: string) => {
@@ -190,22 +203,26 @@ export default defineContentScript({
                         onClick={() => handleInsertParams(content)}
                       />
                     ))}
-                    <div className="MenuSeparator" />
+                    {showRandomLanguages && <MenuSeparator />}
                   </>
                 )}
-                <div className="MenuLabel">Random</div>
-                {languagesToShow.map((language) => (
-                  <MenuItem
-                    node={<div key={language}>{capitalize(language)}</div>}
-                    onClick={() => {
-                      // Send message to background script to get random content
-                      browser.runtime.sendMessage({
-                        action: "requestContent",
-                        language: language,
-                      });
-                    }}
-                  />
-                ))}
+                {showRandomLanguages && (
+                  <>
+                    <div className="MenuLabel">Random</div>
+                    {languagesToShow.map((language) => (
+                      <MenuItem
+                        node={<div key={language}>{capitalize(language)}</div>}
+                        onClick={() => {
+                          // Send message to background script to get random content
+                          browser.runtime.sendMessage({
+                            action: "requestContent",
+                            language: language,
+                          });
+                        }}
+                      />
+                    ))}
+                  </>
+                )}
               </Menu>
             </Popup>
           );
