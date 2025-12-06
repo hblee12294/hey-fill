@@ -7,3 +7,10 @@ export const enableLongPressStorage = storage.defineItem<boolean>(
   }
 );
 
+
+export const customContentsStorage = storage.defineItem<string[]>(
+  "local:customContents",
+  {
+    defaultValue: [],
+  }
+);

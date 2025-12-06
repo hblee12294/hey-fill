@@ -4,6 +4,8 @@ import { Menu, MenuItem } from "@/components/DropdownMenu.tsx";
 import { LANGUAGES } from "@/data";
 import { capitalize } from "@/utils/capitalize";
 import "@/components/styles.css";
+import { customContentsStorage } from "@/utils/storage";
+import { useEffect, useState } from "react";
 
 function isInputElement(
   element: Element | null
@@ -115,6 +117,45 @@ export default defineContentScript({
 
         const ContentApp = () => {
           const languagesToShow = LANGUAGES;
+          const [customContents, setCustomContents] = useState<string[]>([]);
+
+          useEffect(() => {
+            customContentsStorage.getValue().then(setCustomContents);
+            return customContentsStorage.watch(setCustomContents);
+          }, []);
+
+          const handleInsertParams = (content: string) => {
+            if (lastActiveElement) {
+              const activeElement = lastActiveElement;
+              if (isInputElement(activeElement)) {
+                const inputElement = activeElement as HTMLInputElement;
+                const start = inputElement.selectionStart ?? 0;
+                const end = inputElement.selectionEnd ?? 0;
+                const currentValue = inputElement.value;
+
+                inputElement.value =
+                  currentValue.slice(0, start) +
+                  content +
+                  currentValue.slice(end);
+
+                inputElement.setSelectionRange(
+                  start + content.length,
+                  start + content.length
+                );
+
+                const event = new Event("input", { bubbles: true });
+                activeElement.dispatchEvent(event);
+              } else if (isContentEditableElement(activeElement)) {
+                activeElement.focus();
+                if (lastRange) {
+                  const selection = window.getSelection();
+                  selection?.removeAllRanges();
+                  selection?.addRange(lastRange);
+                }
+                document.execCommand("insertText", false, content);
+              }
+            }
+          };
 
           return (
             <Popup
@@ -133,6 +174,25 @@ export default defineContentScript({
                   </div>
                 }
               >
+                {customContents.length > 0 && (
+                  <>
+                    <div className="MenuLabel">Custom</div>
+                    {customContents.map((content, index) => (
+                      <MenuItem
+                        key={`custom-${index}`}
+                        node={
+                          <div title={content}>
+                            {content.length > 20
+                              ? content.slice(0, 20) + "..."
+                              : content}
+                          </div>
+                        }
+                        onClick={() => handleInsertParams(content)}
+                      />
+                    ))}
+                    <div className="MenuSeparator" />
+                  </>
+                )}
                 {languagesToShow.map((language) => (
                   <MenuItem
                     node={<div key={language}>{capitalize(language)}</div>}
