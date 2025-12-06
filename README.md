@@ -1,12 +1,15 @@
 # Hey Fill
 
-A Chrome/Firefox extension that helps you quickly fill input fields, textareas, and contenteditable elements with inspiring quotes in multiple languages. Access quotes via long-press or right-click context menu.
+A Chrome/Firefox extension that helps you quickly fill input fields, textareas, and contenteditable elements with inspiring quotes in multiple languages or your own custom content. Access quotes via long-press or right-click context menu.
 
 ## ✨ Features
 
 - **🖱️ Long-Press Interaction**: Press and hold (500ms) on any editable field to show a popup menu with language options
 - **📋 Context Menu Integration**: Right-click on editable fields to access quotes through the context menu
-- **⚙️ Customizable Settings**: Toggle the long-press feature on/off via the extension popup
+- **✍️ Custom Content**: Add up to 5 custom sentences to the filling list
+- **⚙️ Customizable Settings**:
+  - Toggle the long-press feature on/off
+  - Toggle random language menu on/off
 - **🌍 Multi-language Support**: Choose from 6 languages:
   - English
   - Chinese (中文)
@@ -25,22 +28,27 @@ A Chrome/Firefox extension that helps you quickly fill input fields, textareas, 
 1. Navigate to any webpage with an input field, textarea, or contenteditable element
 2. Press and hold on the field for 500ms
 3. A popup menu with a "Fill" button will appear
-4. Click the "Fill" button to see available languages
-5. Select your preferred language
-6. A random inspiring quote in that language will be inserted at your cursor position
+4. Click the "Fill" button to see available options (Custom + Languages)
+5. Select your preferred option
+6. The content will be inserted at your cursor position
 
 ### Method 2: Context Menu
 
 1. Right-click on any editable field
 2. Hover over "Hey" in the context menu
-3. Select your preferred language from the submenu
-4. A random quote will be inserted immediately
+3. Select your preferred content from the submenu
+4. The content will be inserted immediately
 
 ### Settings
 
-- Click the extension icon in your browser toolbar
-- Toggle "Enable Long Press" on or off based on your preference
-- The context menu remains available regardless of this setting
+Click the extension icon in your browser toolbar to access settings:
+
+1. **Enable Long Press**: Toggle on/off to enable/disable the long-press interaction.
+2. **Show Random Languages**: Toggle on/off to show/hide the random language list.
+3. **Custom Content**:
+   - Add new custom sentences (max 5)
+   - Delete existing sentences
+   - These will appear at the top of the menu
 
 ## 🛠️ Development
 
