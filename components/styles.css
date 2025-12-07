@@ -18,7 +18,7 @@
 .MenuItem {
   display: flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 6px 12px;
   border-radius: 8px;
   border: none;
   background: transparent;
@@ -104,7 +104,8 @@
 }
 
 .MenuLabel {
-  padding: 5px 12px;
+  padding: 2px 12px;
+  margin: 0 0 3px;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -115,7 +116,7 @@
 .MenuSeparator {
   height: 1px;
   background: rgba(0, 0, 0, 0.1);
-  margin: 4px 0;
+  margin: 8px 0;
 }
 
 @media (prefers-color-scheme: dark) {
