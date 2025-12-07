@@ -18,7 +18,7 @@ function App() {
   return (
     <div className="container">
       <header>
-        <h1>Hey Fill</h1>
+        <h1>HeyFill</h1>
       </header>
 
       <div className="section">

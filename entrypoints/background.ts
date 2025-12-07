@@ -6,7 +6,7 @@ export default defineBackground(() => {
   browser.runtime.onInstalled.addListener(() => {
     browser.contextMenus.create({
       id: "say_hey",
-      title: "Hey",
+      title: "HeyFill",
       contexts: ["editable"],
     });
 
