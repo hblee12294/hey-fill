@@ -50,5 +50,11 @@ export default defineBackground(() => {
         content: randomContent,
       });
     }
+
+    if (message.action === "openPopup") {
+      // Open the popup page in a new tab since we can't programmatically open the popup
+      const popupUrl = browser.runtime.getURL("/popup.html");
+      browser.tabs.create({ url: popupUrl });
+    }
   });
 });

@@ -128,3 +128,14 @@
     background: rgba(255, 255, 255, 0.1);
   }
 }
+
+.AddCustomButton {
+  color: #646cff;
+  font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+  .AddCustomButton {
+    color: #818cf8;
+  }
+}

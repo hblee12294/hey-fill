@@ -187,9 +187,9 @@ export default defineContentScript({
                   </div>
                 }
               >
-                {customContents.length > 0 && (
+                <div className="MenuLabel">Custom</div>
+                {customContents.length > 0 ? (
                   <>
-                    <div className="MenuLabel">Custom</div>
                     {customContents.map((content, index) => (
                       <MenuItem
                         key={`custom-${index}`}
@@ -203,9 +203,20 @@ export default defineContentScript({
                         onClick={() => handleInsertParams(content)}
                       />
                     ))}
-                    {showRandomLanguages && <MenuSeparator />}
                   </>
+                ) : (
+                  <MenuItem
+                    node={
+                      <div className="AddCustomButton">
+                        + Add Custom Content
+                      </div>
+                    }
+                    onClick={() => {
+                      browser.runtime.sendMessage({ action: "openPopup" });
+                    }}
+                  />
                 )}
+                {showRandomLanguages && <MenuSeparator />}
                 {showRandomLanguages && (
                   <>
                     <div className="MenuLabel">Random</div>
