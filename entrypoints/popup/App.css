@@ -1,18 +1,6 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-}
+@import "../../components/theme.css";
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
+/* Popup-specific styles */
 html,
 body,
 #root {
@@ -20,7 +8,6 @@ body,
 }
 
 body {
-  margin: 0;
   min-width: 280px;
   max-width: 320px;
 }
@@ -37,48 +24,50 @@ header h1 {
   font-size: 1.2em;
   margin: 0;
   text-align: left;
+  font-weight: 600;
 }
 
 .section {
-  background: #333;
-  border-radius: 8px;
-  padding: 8px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
 .row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 4px 0;
+  gap: 12px;
 }
 
-label {
+.row-label {
   cursor: pointer;
   flex: 1;
   font-size: 14px;
+  color: var(--text-primary);
 }
 
-input[type="checkbox"] {
-  cursor: pointer;
-  accent-color: #646cff;
-  width: 16px;
-  height: 16px;
+/* Override toggle in popup context */
+.row .toggle {
+  flex-shrink: 0;
 }
 
 .settings-btn {
   width: 100%;
   padding: 12px 16px;
   border: none;
-  border-radius: 8px;
-  background: #646cff;
-  color: white;
+  border-radius: var(--radius-md);
+  background: var(--accent-color);
+  color: #ffffff;
   font-size: 14px;
   font-weight: 500;
+  font-family: var(--font-family);
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,19 +75,9 @@ input[type="checkbox"] {
 }
 
 .settings-btn:hover {
-  background: #5558dd;
+  background: var(--accent-color-hover);
 }
 
 .settings-btn:active {
-  background: #4449cc;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  .section {
-    background: #f9f9f9;
-  }
+  opacity: 0.9;
 }

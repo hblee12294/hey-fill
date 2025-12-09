@@ -39,7 +39,7 @@ function App() {
     <div className="settings-container">
       {/* Header */}
       <header className="header">
-        <span className="logo-icon">✨</span>
+        <span className="logo-icon"></span>
         <h1 className="logo-text">HeyFill Settings</h1>
       </header>
 

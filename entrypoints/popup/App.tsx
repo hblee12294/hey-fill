@@ -25,30 +25,32 @@ function App() {
 
       <div className="section">
         <div className="row">
-          <label htmlFor="long-press">Enable Long Press</label>
-          <input
-            id="long-press"
-            type="checkbox"
-            checked={!!enableLongPress}
-            onChange={(e) => setEnableLongPress(e.target.checked)}
-            className="toggle"
-          />
+          <span className="row-label">Enable Long Press</span>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={!!enableLongPress}
+              onChange={(e) => setEnableLongPress(e.target.checked)}
+            />
+            <span className="toggle-slider"></span>
+          </label>
         </div>
         <div className="row">
-          <label htmlFor="show-random">Show Random Languages</label>
-          <input
-            id="show-random"
-            type="checkbox"
-            checked={!!showRandomLanguages}
-            onChange={(e) => setShowRandomLanguages(e.target.checked)}
-            className="toggle"
-          />
+          <span className="row-label">Show Random Languages</span>
+          <label className="toggle">
+            <input
+              type="checkbox"
+              checked={!!showRandomLanguages}
+              onChange={(e) => setShowRandomLanguages(e.target.checked)}
+            />
+            <span className="toggle-slider"></span>
+          </label>
         </div>
       </div>
 
       <div className="section">
         <button className="settings-btn" onClick={handleOpenSettings}>
-          ✏️ Edit Custom Contents
+          Edit Custom Contents
         </button>
       </div>
     </div>
