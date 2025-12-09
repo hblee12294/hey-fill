@@ -21,9 +21,8 @@ body,
 
 body {
   margin: 0;
-  min-width: 300px;
-  max-width: 400px;
-  min-height: 400px;
+  min-width: 280px;
+  max-width: 320px;
 }
 
 .container {
@@ -49,14 +48,6 @@ header h1 {
   gap: 8px;
 }
 
-.section h2 {
-  font-size: 0.9em;
-  margin: 0 0 8px 0;
-  opacity: 0.7;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
 .row {
   display: flex;
   justify-content: space-between;
@@ -67,6 +58,7 @@ header h1 {
 label {
   cursor: pointer;
   flex: 1;
+  font-size: 14px;
 }
 
 input[type="checkbox"] {
@@ -76,9 +68,29 @@ input[type="checkbox"] {
   height: 16px;
 }
 
-.loading {
-  padding: 20px;
-  text-align: center;
+.settings-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #646cff;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.settings-btn:hover {
+  background: #5558dd;
+}
+
+.settings-btn:active {
+  background: #4449cc;
 }
 
 @media (prefers-color-scheme: light) {
@@ -88,87 +100,5 @@ input[type="checkbox"] {
   }
   .section {
     background: #f9f9f9;
-  }
-}
-
-.custom-content-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.custom-content-item {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  background: rgba(0, 0, 0, 0.1);
-  padding: 8px 10px;
-  border-radius: 4px;
-  gap: 8px;
-}
-
-@media (prefers-color-scheme: light) {
-  .custom-content-item {
-    background: rgba(0, 0, 0, 0.05);
-  }
-}
-
-.content-text {
-  flex: 1;
-  white-space: normal;
-  word-break: break-word;
-  font-size: 0.9em;
-  line-height: 1.4;
-}
-
-.delete-btn {
-  background: none;
-  border: none;
-  color: #999;
-  cursor: pointer;
-  font-size: 1.2em;
-  padding: 0 4px;
-  line-height: 1;
-}
-
-.delete-btn:hover {
-  color: #ff4444;
-}
-
-.add-content-row {
-  display: flex;
-  gap: 8px;
-}
-
-.add-content-row input {
-  flex: 1;
-  padding: 6px 10px;
-  border-radius: 4px;
-  border: 1px solid #555;
-  background: transparent;
-  color: inherit;
-}
-
-.add-content-row button {
-  padding: 6px 12px;
-  border-radius: 4px;
-  border: none;
-  background: #646cff;
-  color: white;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.add-content-row button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-@media (prefers-color-scheme: light) {
-  .add-content-row input {
-    border-color: #ccc;
   }
 }

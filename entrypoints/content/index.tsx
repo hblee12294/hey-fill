@@ -187,7 +187,6 @@ export default defineContentScript({
                   </div>
                 }
               >
-                <div className="MenuLabel">Custom</div>
                 {customContents.length > 0 ? (
                   <>
                     {customContents.map((content, index) => (

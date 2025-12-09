@@ -51,10 +51,10 @@ export default defineBackground(() => {
       });
     }
 
-    if (message.action === "openPopup") {
-      // Open the popup page in a new tab since we can't programmatically open the popup
-      const popupUrl = browser.runtime.getURL("/popup.html");
-      browser.tabs.create({ url: popupUrl });
+    // Open settings page (from content script or popup)
+    if (message.action === "openPopup" || message.action === "openSettings") {
+      const settingsUrl = browser.runtime.getURL("/settings.html");
+      browser.tabs.create({ url: settingsUrl });
     }
   });
 });
