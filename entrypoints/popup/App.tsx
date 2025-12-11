@@ -48,11 +48,9 @@ function App() {
         </div>
       </div>
 
-      <div className="section">
-        <button className="settings-btn" onClick={handleOpenSettings}>
-          Edit Custom Contents
-        </button>
-      </div>
+      <button className="settings-btn" onClick={handleOpenSettings}>
+        Edit Custom Contents
+      </button>
     </div>
   );
 }

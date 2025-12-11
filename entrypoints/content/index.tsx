@@ -205,11 +205,7 @@ export default defineContentScript({
                   </>
                 ) : (
                   <MenuItem
-                    node={
-                      <div className="AddCustomButton">
-                        + Add Custom Content
-                      </div>
-                    }
+                    node={<div>+ Custom Content</div>}
                     onClick={() => {
                       browser.runtime.sendMessage({ action: "openPopup" });
                     }}
