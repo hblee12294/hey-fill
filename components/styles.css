@@ -128,3 +128,21 @@
     background: rgba(255, 255, 255, 0.1);
   }
 }
+
+/* MenuPreview - Static preview in settings */
+.MenuPreview {
+  display: inline-block;
+}
+
+.MenuPreview .Menu {
+  position: static;
+  opacity: 1;
+}
+
+.MenuPreview .MenuItem {
+  cursor: default;
+}
+
+.MenuPreview .MenuItem:hover {
+  background: transparent;
+}
