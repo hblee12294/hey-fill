@@ -1,8 +1,7 @@
 import ReactDOM from "react-dom/client";
 import { Popup } from "@/components/Popup.tsx";
 import { Menu, MenuItem, MenuSeparator } from "@/components/DropdownMenu.tsx";
-import { LANGUAGES } from "@/data";
-import { capitalize } from "@/utils/capitalize";
+import { MenuContent } from "@/components/MenuContent";
 import "@/components/styles.css";
 import { customContentsStorage } from "@/utils/storage";
 import { useEffect, useState } from "react";
@@ -116,7 +115,6 @@ export default defineContentScript({
         const root = ReactDOM.createRoot(container);
 
         const ContentApp = () => {
-          const languagesToShow = LANGUAGES;
           const [customContents, setCustomContents] = useState<string[]>([]);
           const [showRandomLanguages, setShowRandomLanguages] =
             useState<boolean>(true);
@@ -137,7 +135,7 @@ export default defineContentScript({
             };
           }, []);
 
-          const handleInsertParams = (content: string) => {
+          const handleInsertContent = (content: string) => {
             if (lastActiveElement) {
               const activeElement = lastActiveElement;
               if (isInputElement(activeElement)) {
@@ -187,48 +185,24 @@ export default defineContentScript({
                   </div>
                 }
               >
-                {customContents.length > 0 ? (
-                  <>
-                    {customContents.map((content, index) => (
-                      <MenuItem
-                        key={`custom-${index}`}
-                        node={
-                          <div title={content}>
-                            {content.length > 20
-                              ? content.slice(0, 20) + "..."
-                              : content}
-                          </div>
-                        }
-                        onClick={() => handleInsertParams(content)}
-                      />
-                    ))}
-                  </>
-                ) : (
-                  <MenuItem
-                    node={<div>+ Custom Content</div>}
-                    onClick={() => {
-                      browser.runtime.sendMessage({ action: "openPopup" });
-                    }}
-                  />
-                )}
-                {showRandomLanguages && <MenuSeparator />}
-                {showRandomLanguages && (
-                  <>
-                    <div className="MenuLabel">Random</div>
-                    {languagesToShow.map((language) => (
-                      <MenuItem
-                        node={<div key={language}>{capitalize(language)}</div>}
-                        onClick={() => {
-                          // Send message to background script to get random content
-                          browser.runtime.sendMessage({
-                            action: "requestContent",
-                            language: language,
-                          });
-                        }}
-                      />
-                    ))}
-                  </>
-                )}
+                <MenuContent
+                  customContents={customContents}
+                  showRandomLanguages={showRandomLanguages}
+                  onCustomContentClick={handleInsertContent}
+                  onAddCustomClick={() => {
+                    browser.runtime.sendMessage({ action: "openPopup" });
+                  }}
+                  onLanguageClick={(language) => {
+                    browser.runtime.sendMessage({
+                      action: "requestContent",
+                      language: language,
+                    });
+                  }}
+                  renderItem={(key, node, onClick) => (
+                    <MenuItem key={key} node={node} onClick={onClick} />
+                  )}
+                  renderSeparator={() => <MenuSeparator />}
+                />
               </Menu>
             </Popup>
           );

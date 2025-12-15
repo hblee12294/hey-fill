@@ -1,5 +1,4 @@
-import { LANGUAGES } from "@/data";
-import { capitalize } from "@/utils/capitalize";
+import { MenuContent } from "./MenuContent";
 import "./styles.css";
 
 interface MenuPreviewProps {
@@ -9,7 +8,7 @@ interface MenuPreviewProps {
 
 /**
  * A static preview of the fill menu for the settings page.
- * Shows how the menu will look based on current settings.
+ * Uses the shared MenuContent component for consistent UI.
  */
 export function MenuPreview({
   customContents,
@@ -18,33 +17,16 @@ export function MenuPreview({
   return (
     <div className="MenuPreview">
       <div className="Menu">
-        {/* Custom Contents Section */}
-        {customContents.length > 0 ? (
-          <>
-            {customContents.map((content, index) => (
-              <div key={`custom-${index}`} className="MenuItem" title={content}>
-                {content.length > 20 ? content.slice(0, 20) + "..." : content}
-              </div>
-            ))}
-          </>
-        ) : (
-          <div className="MenuItem">+ Custom Content</div>
-        )}
-
-        {/* Separator */}
-        {showRandomLanguages && <div className="MenuSeparator" />}
-
-        {/* Random Languages Section */}
-        {showRandomLanguages && (
-          <>
-            <div className="MenuLabel">Random</div>
-            {LANGUAGES.map((language) => (
-              <div key={language} className="MenuItem">
-                {capitalize(language)}
-              </div>
-            ))}
-          </>
-        )}
+        <MenuContent
+          customContents={customContents}
+          showRandomLanguages={showRandomLanguages}
+          renderItem={(key, node) => (
+            <div key={key} className="MenuItem">
+              {node}
+            </div>
+          )}
+          renderSeparator={() => <div className="MenuSeparator" />}
+        />
       </div>
     </div>
   );
