@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, DragEvent } from "react";
 import { useStorage } from "@/utils/useStorage";
 import {
   enableLongPressStorage,
@@ -20,6 +20,8 @@ function App() {
   );
 
   const [newValue, setNewValue] = useState("");
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
   const handleAdd = () => {
     if (!newValue.trim()) return;
@@ -34,6 +36,41 @@ function App() {
     const newContents = [...customContents];
     newContents.splice(index, 1);
     setCustomContents(newContents);
+  };
+
+  const handleDragStart = (e: DragEvent<HTMLDivElement>, index: number) => {
+    setDragIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (dragIndex !== null && index !== dragIndex) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>, dropIndex: number) => {
+    e.preventDefault();
+    if (dragIndex === null || !customContents) return;
+
+    const newContents = [...customContents];
+    const [draggedItem] = newContents.splice(dragIndex, 1);
+    newContents.splice(dropIndex, 0, draggedItem);
+    setCustomContents(newContents);
+
+    setDragIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDragIndex(null);
+    setDragOverIndex(null);
   };
 
   return (
@@ -100,7 +137,33 @@ function App() {
             <div className="setting-card">
               <div className="custom-list">
                 {customContents?.map((content, index) => (
-                  <div key={index} className="custom-item">
+                  <div
+                    key={index}
+                    className={`custom-item${
+                      dragIndex === index ? " dragging" : ""
+                    }${dragOverIndex === index ? " drag-over" : ""}`}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, index)}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <span className="drag-handle" aria-label="Drag to reorder">
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <circle cx="9" cy="6" r="1.5" />
+                        <circle cx="15" cy="6" r="1.5" />
+                        <circle cx="9" cy="12" r="1.5" />
+                        <circle cx="15" cy="12" r="1.5" />
+                        <circle cx="9" cy="18" r="1.5" />
+                        <circle cx="15" cy="18" r="1.5" />
+                      </svg>
+                    </span>
                     <span className="custom-number">{index + 1}</span>
                     <span className="custom-text">{content}</span>
                     <button

@@ -180,6 +180,38 @@ body,
   color: #d93025;
 }
 
+/* Drag Handle */
+.drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  color: var(--text-tertiary);
+  transition: color var(--transition-fast);
+  flex-shrink: 0;
+  padding: 4px;
+  margin-left: -4px;
+}
+
+.drag-handle:hover {
+  color: var(--text-secondary);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Dragging States */
+.custom-item.dragging {
+  opacity: 0.5;
+  background: var(--bg-tertiary);
+}
+
+.custom-item.drag-over {
+  border-top: 2px solid var(--accent-color);
+  padding-top: 14px;
+}
+
 /* Empty State */
 .empty-state {
   padding: 40px 24px;
