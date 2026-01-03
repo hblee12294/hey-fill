@@ -3,7 +3,7 @@ import { Popup } from "@/components/Popup.tsx";
 import { Menu, MenuItem, MenuSeparator } from "@/components/DropdownMenu.tsx";
 import { MenuContent } from "@/components/MenuContent";
 import "@/components/styles.css";
-import { customContentsStorage } from "@/utils/storage";
+import { customContentsStorage, migrateCustomContents } from "@/utils/storage";
 import { useEffect, useState } from "react";
 
 function isInputElement(
@@ -115,16 +115,21 @@ export default defineContentScript({
         const root = ReactDOM.createRoot(container);
 
         const ContentApp = () => {
-          const [customContents, setCustomContents] = useState<string[]>([]);
+          const [customContents, setCustomContents] = useState<
+            Array<{ id: string; content: string }>
+          >([]);
           const [showRandomLanguages, setShowRandomLanguages] =
             useState<boolean>(true);
 
           useEffect(() => {
-            customContentsStorage.getValue().then(setCustomContents);
+            customContentsStorage.getValue().then((rawData) => {
+              setCustomContents(migrateCustomContents(rawData));
+            });
             showRandomLanguagesStorage.getValue().then(setShowRandomLanguages);
 
-            const unwatchCustom =
-              customContentsStorage.watch(setCustomContents);
+            const unwatchCustom = customContentsStorage.watch((rawData) => {
+              setCustomContents(migrateCustomContents(rawData));
+            });
             const unwatchRandom = showRandomLanguagesStorage.watch(
               setShowRandomLanguages
             );
@@ -186,7 +191,7 @@ export default defineContentScript({
                 }
               >
                 <MenuContent
-                  customContents={customContents}
+                  customContents={customContents.map((item) => item.content)}
                   showRandomLanguages={showRandomLanguages}
                   onCustomContentClick={handleInsertContent}
                   onAddCustomClick={() => {

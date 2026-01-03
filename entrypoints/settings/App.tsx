@@ -1,11 +1,29 @@
-import { useState, DragEvent } from "react";
+import { useState, useEffect } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { useStorage } from "@/utils/useStorage";
 import {
   enableLongPressStorage,
   customContentsStorage,
   showRandomLanguagesStorage,
+  CustomContentItem,
+  migrateCustomContents,
 } from "@/utils/storage";
 import { MenuPreview } from "@/components/MenuPreview";
+import { SortableItem } from "./SortableItem";
 import "./App.css";
 
 function App() {
@@ -15,62 +33,66 @@ function App() {
   const [showRandomLanguages, setShowRandomLanguages] = useStorage<boolean>(
     showRandomLanguagesStorage
   );
-  const [customContents, setCustomContents] = useStorage<string[]>(
+  const [customContents, setCustomContents] = useStorage<CustomContentItem[]>(
     customContentsStorage
   );
 
   const [newValue, setNewValue] = useState("");
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  // Migrate old data format on mount
+  useEffect(() => {
+    customContentsStorage.getValue().then((rawData) => {
+      const migrated = migrateCustomContents(rawData);
+      // If migration happened (data was in old format), save the new format
+      if (
+        rawData &&
+        Array.isArray(rawData) &&
+        rawData.length > 0 &&
+        typeof rawData[0] === "string"
+      ) {
+        setCustomContents(migrated);
+      }
+    });
+  }, []);
+
+  // Use stable IDs from the items themselves (with safe access)
+  const itemIds = customContents?.map((item) => item?.id).filter(Boolean) ?? [];
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const handleAdd = () => {
     if (!newValue.trim()) return;
     if (customContents && customContents.length >= 5) return;
 
-    setCustomContents([...(customContents || []), newValue.trim()]);
+    const newItem: CustomContentItem = {
+      id: `item-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+      content: newValue.trim(),
+    };
+    setCustomContents([...(customContents || []), newItem]);
     setNewValue("");
   };
 
-  const handleDelete = (index: number) => {
+  const handleDelete = (id: string) => {
     if (!customContents) return;
-    const newContents = [...customContents];
-    newContents.splice(index, 1);
-    setCustomContents(newContents);
+    setCustomContents(customContents.filter((item) => item.id !== id));
   };
 
-  const handleDragStart = (e: DragEvent<HTMLDivElement>, index: number) => {
-    setDragIndex(index);
-    e.dataTransfer.effectAllowed = "move";
-  };
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-  const handleDragOver = (e: DragEvent<HTMLDivElement>, index: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-    if (dragIndex !== null && index !== dragIndex) {
-      setDragOverIndex(index);
+    if (over && active.id !== over.id) {
+      const oldIndex = itemIds.indexOf(active.id as string);
+      const newIndex = itemIds.indexOf(over.id as string);
+
+      if (customContents) {
+        setCustomContents(arrayMove(customContents, oldIndex, newIndex));
+      }
     }
-  };
-
-  const handleDragLeave = () => {
-    setDragOverIndex(null);
-  };
-
-  const handleDrop = (e: DragEvent<HTMLDivElement>, dropIndex: number) => {
-    e.preventDefault();
-    if (dragIndex === null || !customContents) return;
-
-    const newContents = [...customContents];
-    const [draggedItem] = newContents.splice(dragIndex, 1);
-    newContents.splice(dropIndex, 0, draggedItem);
-    setCustomContents(newContents);
-
-    setDragIndex(null);
-    setDragOverIndex(null);
-  };
-
-  const handleDragEnd = () => {
-    setDragIndex(null);
-    setDragOverIndex(null);
   };
 
   return (
@@ -136,56 +158,28 @@ function App() {
 
             <div className="setting-card">
               <div className="custom-list">
-                {customContents?.map((content, index) => (
-                  <div
-                    key={index}
-                    className={`custom-item${
-                      dragIndex === index ? " dragging" : ""
-                    }${dragOverIndex === index ? " drag-over" : ""}`}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, index)}
-                    onDragOver={(e) => handleDragOver(e, index)}
-                    onDragLeave={handleDragLeave}
-                    onDrop={(e) => handleDrop(e, index)}
+                {customContents && customContents.length > 0 ? (
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
                     onDragEnd={handleDragEnd}
                   >
-                    <span className="drag-handle" aria-label="Drag to reorder">
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <circle cx="9" cy="6" r="1.5" />
-                        <circle cx="15" cy="6" r="1.5" />
-                        <circle cx="9" cy="12" r="1.5" />
-                        <circle cx="15" cy="12" r="1.5" />
-                        <circle cx="9" cy="18" r="1.5" />
-                        <circle cx="15" cy="18" r="1.5" />
-                      </svg>
-                    </span>
-                    <span className="custom-number">{index + 1}</span>
-                    <span className="custom-text">{content}</span>
-                    <button
-                      className="delete-btn"
-                      onClick={() => handleDelete(index)}
-                      aria-label="Delete"
+                    <SortableContext
+                      items={itemIds}
+                      strategy={verticalListSortingStrategy}
                     >
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path d="M18 6L6 18M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-
-                {(!customContents || customContents.length === 0) && (
+                      {customContents.map((item, index) => (
+                        <SortableItem
+                          key={item.id}
+                          id={item.id}
+                          content={item.content}
+                          index={index}
+                          onDelete={() => handleDelete(item.id)}
+                        />
+                      ))}
+                    </SortableContext>
+                  </DndContext>
+                ) : (
                   <div className="empty-state">
                     <p>No custom content yet. Add your first one below!</p>
                   </div>
@@ -228,7 +222,7 @@ function App() {
               This is how your fill menu will look
             </p>
             <MenuPreview
-              customContents={customContents || []}
+              customContents={customContents?.map((item) => item.content) || []}
               showRandomLanguages={!!showRandomLanguages}
             />
           </div>
